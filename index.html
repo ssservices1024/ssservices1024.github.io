@@ -407,6 +407,7 @@
               transition: all 0.2s ease;
             }
             .loc-btn:hover { background: #e1e8e4; }
+            .loc-btn:disabled { opacity: 0.6; cursor: not-allowed; }
             
             .price-display {
               background: #d8f3dc;
@@ -434,6 +435,14 @@
               text-transform: uppercase;
             }
             .submit-btn:hover { background: #1b4332; }
+            .accuracy-badge {
+              font-size: 11px;
+              color: #666;
+              text-align: center;
+              margin: 4px auto 10px;
+              display: block;
+              width: 95%;
+            }
           </style>
         </head>
         <body onload="updatePrice()">
@@ -444,7 +453,10 @@
           <input type="tel" id="popup_phone" placeholder="WhatsApp Phone Number (Optional)">
           
           <button type="button" class="loc-btn" id="locBtn" onclick="getLocation()">📍 Auto-Fetch My GPS Location</button>
+          <span class="accuracy-badge" id="accuracyDisplay"></span>
           <input type="hidden" id="popup_mapsLink" value="">
+          <input type="hidden" id="popup_lat" value="">
+          <input type="hidden" id="popup_lon" value="">
 
           <textarea id="popup_address" rows="3" placeholder="Complete Address (House No, Flat, Apartment, Street Name)"></textarea>
           <input type="text" id="popup_pincode" placeholder="Pincode (Optional)" maxlength="6">
@@ -477,51 +489,136 @@
           <button class="submit-btn" onclick="sendOrder()">Confirm Order via WhatsApp</button>
 
           <script>
+            var gpsWatchId = null;
+            var bestAccuracy = Infinity;
+            var bestLat = null;
+            var bestLon = null;
+
             function getLocation() {
               var btn = document.getElementById("locBtn");
-              if (navigator.geolocation) {
-                btn.innerText = "⏳ Locating your GPS position...";
-                btn.disabled = true;
-                
-                // Production-grade: High accuracy with proper timeout
-                navigator.geolocation.getCurrentPosition(showPosition, showError, {
-                  enableHighAccuracy: true,
-                  timeout: 10000,
-                  maximumAge: 0
-                });
-              } else {
+              if (!navigator.geolocation) {
                 alert("Geolocation is not supported by this browser.");
+                return;
               }
+
+              // Reset
+              bestAccuracy = Infinity;
+              bestLat = null;
+              bestLon = null;
+              document.getElementById("accuracyDisplay").textContent = "";
+
+              btn.innerText = "⏳ Getting precise GPS... (may take 10-15s)";
+              btn.disabled = true;
+
+              // Use watchPosition to get continuous updates until we get a good fix
+              gpsWatchId = navigator.geolocation.watchPosition(
+                function(position) {
+                  var accuracy = position.coords.accuracy;
+                  var lat = position.coords.latitude;
+                  var lon = position.coords.longitude;
+
+                  // Keep the best accuracy we've seen
+                  if (accuracy < bestAccuracy) {
+                    bestAccuracy = accuracy;
+                    bestLat = lat;
+                    bestLon = lon;
+                  }
+
+                  // Update display
+                  var accuracyDisplay = document.getElementById("accuracyDisplay");
+                  
+                  if (accuracy <= 20) {
+                    accuracyDisplay.textContent = "🎯 Excellent! Accuracy: " + Math.round(accuracy) + " meters";
+                    accuracyDisplay.style.color = "#1b4332";
+                  } else if (accuracy <= 50) {
+                    accuracyDisplay.textContent = "📍 Good: " + Math.round(accuracy) + " meters accuracy";
+                    accuracyDisplay.style.color = "#2d6a4f";
+                  } else if (accuracy <= 100) {
+                    accuracyDisplay.textContent = "⚠️ Approximate: " + Math.round(accuracy) + " meters accuracy";
+                    accuracyDisplay.style.color = "#856404";
+                  } else {
+                    accuracyDisplay.textContent = "❌ Poor accuracy: " + Math.round(accuracy) + " meters - still trying...";
+                    accuracyDisplay.style.color = "#721c24";
+                  }
+
+                  // If accuracy is good enough (under 50 meters), stop watching
+                  if (accuracy <= 50 && bestAccuracy <= 50) {
+                    stopAndSavePosition();
+                  }
+                },
+                function(error) {
+                  // If watch fails, try one-time getCurrentPosition as fallback
+                  navigator.geolocation.getCurrentPosition(
+                    function(pos) {
+                      bestLat = pos.coords.latitude;
+                      bestLon = pos.coords.longitude;
+                      bestAccuracy = pos.coords.accuracy;
+                      stopAndSavePosition();
+                    },
+                    function(err) {
+                      var btn = document.getElementById("locBtn");
+                      btn.innerText = "❌ GPS unavailable. Please type address.";
+                      btn.disabled = false;
+                      document.getElementById("accuracyDisplay").textContent = "⚠️ Enable location in browser settings";
+                    },
+                    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+                  );
+                },
+                {
+                  enableHighAccuracy: true,
+                  timeout: 30000,
+                  maximumAge: 0
+                }
+              );
+
+              // Auto-stop after 20 seconds to prevent infinite waiting
+              setTimeout(function() {
+                if (gpsWatchId !== null) {
+                  stopAndSavePosition();
+                }
+              }, 20000);
             }
 
-            function showPosition(position) {
-              var lat = position.coords.latitude;
-              var lon = position.coords.longitude;
-              var accuracy = position.coords.accuracy;
+            function stopAndSavePosition() {
+              if (gpsWatchId !== null) {
+                navigator.geolocation.clearWatch(gpsWatchId);
+                gpsWatchId = null;
+              }
+
+              var btn = document.getElementById("locBtn");
               
-              // Only accept if accuracy is within 100 meters (production standard)
-              if (accuracy > 100) {
-                var btn = document.getElementById("locBtn");
-                btn.innerText = "⚠️ Low accuracy (" + Math.round(accuracy) + "m). Please type address.";
+              if (bestLat !== null && bestLon !== null && bestAccuracy <= 100) {
+                // Save the best coordinates
+                document.getElementById("popup_mapsLink").value = "https://www.google.com/maps?q=" + bestLat + "," + bestLon;
+                document.getElementById("popup_lat").value = bestLat;
+                document.getElementById("popup_lon").value = bestLon;
+                
+                btn.innerText = "✅ GPS Locked (" + Math.round(bestAccuracy) + "m accuracy)";
+                btn.style.background = "#d8f3dc";
+                btn.style.color = "#1b4332";
+                btn.style.border = "1px solid #1b4332";
+                btn.disabled = false;
+
+                var addrBox = document.getElementById("popup_address");
+                addrBox.value = "[📍 GPS: " + Math.round(bestAccuracy) + "m accuracy] " + addrBox.value;
+                
+                document.getElementById("accuracyDisplay").textContent = "✅ Location captured! Click 'Confirm Order' to proceed.";
+                document.getElementById("accuracyDisplay").style.color = "#1b4332";
+              } else if (bestLat !== null && bestLon !== null) {
+                // Poor accuracy but we have coordinates - accept them but warn
+                document.getElementById("popup_mapsLink").value = "https://www.google.com/maps?q=" + bestLat + "," + bestLon;
+                btn.innerText = "⚠️ Approx location (" + Math.round(bestAccuracy) + "m)";
                 btn.style.background = "#fff3cd";
                 btn.style.color = "#856404";
                 btn.style.border = "1px solid #856404";
                 btn.disabled = false;
-                return;
+                document.getElementById("accuracyDisplay").textContent = "⚠️ Low accuracy. Please verify address below.";
+                document.getElementById("accuracyDisplay").style.color = "#856404";
+              } else {
+                btn.innerText = "❌ Could not get location. Type address manually.";
+                btn.disabled = false;
+                document.getElementById("accuracyDisplay").textContent = "⚠️ Please enter your full address below";
               }
-              
-              // 🌐 Standard global maps query format
-              document.getElementById("popup_mapsLink").value = "https://www.google.com/maps?q=" + lat + "," + lon;
-              
-              var btn = document.getElementById("locBtn");
-              btn.innerText = "✅ GPS Locked (" + Math.round(accuracy) + "m accuracy)";
-              btn.style.background = "#d8f3dc";
-              btn.style.color = "#1b4332";
-              btn.style.border = "1px solid #1b4332";
-              btn.disabled = false;
-
-              var addrBox = document.getElementById("popup_address");
-              addrBox.value = "[📍 GPS Coordinates Linked] " + addrBox.value;
             }
 
             function showError(error) {
@@ -567,14 +664,22 @@
               var address = document.getElementById("popup_address").value.trim() || "Not Provided";
               var pincode = document.getElementById("popup_pincode").value.trim() || "Not Provided";
               var mapsLink = document.getElementById("popup_mapsLink").value;
+              var lat = document.getElementById("popup_lat").value;
+              var lon = document.getElementById("popup_lon").value;
               
               var product = document.getElementById("product").value;
               var size = document.getElementById("size").value;
               var qty = document.getElementById("qty").value;
               var total = document.getElementById("total").innerText;
             
-              // ✅ FIX: Don't encode the entire URL - just encode the text message parts
-              var gpsLine = mapsLink ? "• *GPS Map Link:* " + mapsLink + "%0A" : "";
+              // Build GPS line - if we have coordinates, use them
+              var gpsLine = "";
+              if (mapsLink) {
+                gpsLine = "• *GPS Map Link:* " + mapsLink + "%0A";
+              }
+              if (lat && lon) {
+                gpsLine += "• *Coordinates:* " + lat + ", " + lon + "%0A";
+              }
             
               var msg = "🌱 *NEW MICROGREENS ORDER* %0A" +
                         "=========================%0A%0A" +
