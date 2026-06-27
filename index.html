@@ -8,7 +8,7 @@
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
+      font-family: Arial;
     }
 
     header {
@@ -19,8 +19,8 @@
     }
 
     .section {
-      text-align: center;
       padding: 30px;
+      text-align: center;
     }
 
     .products {
@@ -30,41 +30,41 @@
     }
 
     .card {
-      background: #fff;
-      margin: 10px;
+      background: white;
       padding: 15px;
+      margin: 10px;
       width: 220px;
       border-radius: 10px;
       box-shadow: 0 0 10px #ccc;
     }
 
-    .contact {
-      background: #eaffea;
-      padding: 30px;
-    }
-
-    input, select, textarea {
+    input, select {
       width: 80%;
       padding: 10px;
       margin: 8px;
       border-radius: 5px;
-      border: 1px solid #ccc;
     }
 
     button {
       background: green;
       color: white;
-      padding: 10px 15px;
+      padding: 10px;
       border: none;
       border-radius: 5px;
       cursor: pointer;
     }
 
+    .contact {
+      background: #eaffea;
+      padding: 30px;
+      text-align: center;
+    }
+
     footer {
       background: #0b6623;
       color: white;
-      text-align: center;
       padding: 15px;
+      text-align: center;
     }
   </style>
 </head>
@@ -73,33 +73,28 @@
 
 <header>
   <h1>🌱 SS Microgreens</h1>
-  <p>Fresh | Organic | Healthy</p>
+  <p>Eat Fresh • Live Healthy</p>
 </header>
 
-<!-- ✅ PRODUCTS -->
+<!-- ✅ PRODUCT DISPLAY -->
 <div class="section">
   <h2>Our Products</h2>
 
   <div class="products">
-
     <div class="card">
       <h3>🌿 Wheatgrass</h3>
-      <p>50g Pack</p>
-      <p>₹50</p>
+      <p>Available Sizes: 50g | 100g | 250g</p>
     </div>
 
     <div class="card">
       <h3>🌻 Sunflower</h3>
-      <p>50g Pack</p>
-      <p>₹60</p>
+      <p>Available Sizes: 50g | 100g | 250g</p>
     </div>
 
     <div class="card">
       <h3>🌱 Pea Shoots</h3>
-      <p>50g Pack</p>
-      <p>₹70</p>
+      <p>Available Sizes: 50g | 100g | 250g</p>
     </div>
-
   </div>
 </div>
 
@@ -107,29 +102,30 @@
 <div class="contact">
   <h2>Place Your Order</h2>
 
-  <form onsubmit="sendOrder(); return false;">
-    
-    <input type="text" id="name" placeholder="Your Name" required><br>
+  <input type="text" id="name" placeholder="Your Name"><br>
 
-    <select id="product">
-      <option value="Wheatgrass (50g)">Wheatgrass (50g)</option>
-      <option value="Sunflower (50g)">Sunflower (50g)</option>
-      <option value="Pea Shoots (50g)">Pea Shoots (50g)</option>
-    </select><br>
+  <select id="product">
+    <option value="Wheatgrass">Wheatgrass</option>
+    <option value="Sunflower">Sunflower</option>
+    <option value="Pea Shoots">Pea Shoots</option>
+  </select><br>
 
-    <select id="qty">
-      <option value="1 Box">1 Box</option>
-      <option value="2 Boxes">2 Boxes</option>
-      <option value="3 Boxes">3 Boxes</option>
-    </select><br>
+  <select id="size" onchange="updatePrice()">
+    <option value="50">50g</option>
+    <option value="100">100g</option>
+    <option value="250">250g</option>
+  </select><br>
 
-    <textarea id="address" placeholder="Enter Delivery Address"></textarea><br>
+  <select id="qty" onchange="updatePrice()">
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+  </select><br>
 
-    <button type="submit">Place Order</button>
+  <h3 id="price">Price: ₹0</h3>
+  <h3 id="total">Total: ₹0</h3>
 
-  </form>
-
-  <br>
+  <button onclick="placeOrder()">Place Order</button>
 
   <p>📞 8105895809</p>
   <p>📧 ssservice1024@gmail.com</p>
@@ -140,21 +136,58 @@
   <p>© 2026 SS Microgreens</p>
 </footer>
 
+<!-- ✅ SCRIPT -->
 <script>
-function sendOrder() {
+
+function getRate(product, size) {
+  if(product == "Wheatgrass") {
+    if(size == 50) return 50;
+    if(size == 100) return 90;
+    if(size == 250) return 200;
+  }
+
+  if(product == "Sunflower") {
+    if(size == 50) return 60;
+    if(size == 100) return 110;
+    if(size == 250) return 250;
+  }
+
+  if(product == "Pea Shoots") {
+    if(size == 50) return 70;
+    if(size == 100) return 130;
+    if(size == 250) return 280;
+  }
+}
+
+function updatePrice() {
+  var product = document.getElementById("product").value;
+  var size = document.getElementById("size").value;
+  var qty = document.getElementById("qty").value;
+
+  var price = getRate(product, size);
+  var total = price * qty;
+
+  document.getElementById("price").innerHTML = "Price: ₹" + price;
+  document.getElementById("total").innerHTML = "Total: ₹" + total;
+}
+
+function placeOrder() {
   var name = document.getElementById("name").value;
   var product = document.getElementById("product").value;
+  var size = document.getElementById("size").value;
   var qty = document.getElementById("qty").value;
-  var address = document.getElementById("address").value;
+  var total = document.getElementById("total").innerText;
 
   var msg = "🌱 New Order:%0A" +
             "Name: " + name + "%0A" +
             "Product: " + product + "%0A" +
+            "Size: " + size + "g%0A" +
             "Quantity: " + qty + "%0A" +
-            "Address: " + address;
+            total;
 
   window.open("https://wa.me/918105895809?text=" + msg);
 }
+
 </script>
 
 </body>
