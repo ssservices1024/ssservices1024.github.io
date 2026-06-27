@@ -368,41 +368,49 @@
 
   <script>
     function openOrderWindow() {
-      var win = window.open("", "", "width=450,height=650");
+      var win = window.open("", "", "width=480,height=720");
       win.document.write(`
         <html>
         <head>
-          <title>Place Order - SS Microgreens</title>
+          <title>Secure Checkout | SS Microgreens</title>
           <style>
             body {
               font-family: 'Segoe UI', Arial, sans-serif;
-              text-align: center;
-              padding: 25px;
+              padding: 20px;
               background-color: #f9fbf9;
               color: #2d3748;
             }
-            h2 { color: #1b4332; margin-bottom: 20px;}
-            input, select {
+            h2 { color: #1b4332; text-align: center; margin-bottom: 15px; font-size: 1.5rem; }
+            .section-label { font-size: 0.9rem; font-weight: bold; color: #2d6a4f; margin-top: 10px; text-align: left; width: 95%; margin-left: auto; margin-right: auto; }
+            input, select, textarea {
               width: 95%;
-              padding: 12px;
-              margin: 10px 0;
+              padding: 11px;
+              margin: 6px auto;
+              display: block;
               border: 1px solid #ccc;
               border-radius: 6px;
-              font-size: 15px;
+              font-size: 14px;
+              box-sizing: border-box;
             }
+            textarea { resize: vertical; font-family: inherit; }
             .price-display {
               background: #d8f3dc;
-              padding: 10px;
+              padding: 12px;
               border-radius: 6px;
-              margin: 15px 0;
+              margin: 15px auto;
+              width: 95%;
+              box-sizing: border-box;
               font-weight: bold;
               color: #1b4332;
+              text-align: center;
             }
             button {
               background: #2d6a4f;
               color: white;
               padding: 14px;
               width: 95%;
+              display: block;
+              margin: 15px auto 0;
               border: none;
               border-radius: 6px;
               cursor: pointer;
@@ -414,9 +422,15 @@
           </style>
         </head>
         <body onload="updatePrice()">
-          <h2>🌱 Place Your Order</h2>
-          <input type="text" id="name" placeholder="Enter Your Name" required>
+          <h2>🌱 Secure Checkout</h2>
           
+          <div class="section-label">1. DELIVERY DETAILS</div>
+          <input type="text" id="name" placeholder="Full Name" required>
+          <input type="tel" id="phone" placeholder="WhatsApp Phone Number" required>
+          <textarea id="address" rows="3" placeholder="Complete Delivery Address (House No, Building, Area/Street Name)" required></textarea>
+          <input type="text" id="pincode" placeholder="Pincode (Bengaluru Only)" maxlength="6" required>
+          
+          <div class="section-label">2. SELECT Fresh HARVEST</div>
           <select id="product" onchange="updatePrice()">
             <option value="Wheatgrass">Wheatgrass</option>
             <option value="Sunflower">Sunflower</option>
@@ -424,24 +438,24 @@
           </select>
           
           <select id="size" onchange="updatePrice()">
-            <option value="50">50g</option>
-            <option value="100">100g</option>
-            <option value="250">250g</option>
+            <option value="50">50g Pack</option>
+            <option value="100">100g Pack</option>
+            <option value="250">250g Pack</option>
           </select>
           
           <select id="qty" onchange="updatePrice()">
-            <option value="1">1 Tray / Pack</option>
-            <option value="2">2 Trays / Packs</option>
-            <option value="3">3 Trays / Packs</option>
-            <option value="4">4 Trays / Packs</option>
+            <option value="1">1 Unit</option>
+            <option value="2">2 Units</option>
+            <option value="3">3 Units</option>
+            <option value="4">4 Units</option>
           </select>
 
           <div class="price-display">
             <div id="price">Unit Price: ₹0</div>
-            <div id="total" style="font-size: 1.2rem; margin-top: 5px;">Total Payable: ₹0</div>
+            <div id="total" style="font-size: 1.25rem; margin-top: 4px;">Total Payable: ₹0</div>
           </div>
 
-          <button onclick="sendOrder()">Confirm Via WhatsApp</button>
+          <button onclick="sendOrder()">Confirm Order via WhatsApp</button>
 
           <script>
             function getRate(product, size) {
@@ -475,32 +489,44 @@
               document.getElementById("total").innerHTML = "Total Payable: ₹" + total;
             }
 
-function sendOrder() {
-  var name = document.getElementById("name").value.trim();
-  if(!name){
-    alert("Please enter your name to confirm.");
-    return;
-  }
-  var product = document.getElementById("product").value;
-  var size = document.getElementById("size").value;
-  var qty = document.getElementById("qty").value;
-  var total = document.getElementById("total").innerText;
+            function sendOrder() {
+              var name = document.getElementById("name").value.trim();
+              var phone = document.getElementById("phone").value.trim();
+              var address = document.getElementById("address").value.trim();
+              var pincode = document.getElementById("pincode").value.trim();
+              
+              var product = document.getElementById("product").value;
+              var size = document.getElementById("size").value;
+              var qty = document.getElementById("qty").value;
+              var total = document.getElementById("total").innerText;
 
-  // 📝 Custom message template including your zero-fee payment instructions
-  var msg = "🌱 *NEW MICROGREENS ORDER*:%0A%0A" +
-            "*Customer Name:* " + encodeURIComponent(name) + "%0A" +
-            "*Selected Product:* " + product + "%0A" +
-            "*Pack Size:* " + size + "g%0A" +
-            "*Quantity:* " + qty + " Box(es)%0A%0A" +
-            "🌟 *" + total + "*%0A%0A" +
-            "------------ *PAYMENT INFO* ------------%0A" +
-            "Please pay using any UPI app (GPay/PhonePe/Paytm):%0A" +
-            "📱 *Mobile Number:* 8105895809%0A" +
-            "💳 *UPI ID:* ssservice1024@okaxis%0A%0A" +
-            "👉 _Please share your delivery address & a payment screenshot to schedule the fresh harvest!_";
+              if(!name || !phone || !address || !pincode){
+                alert("Please complete all delivery information fields before submitting.");
+                return;
+              }
 
-  window.open("https://wa.me/918105895809?text=" + msg);
-}
+              // 📝 Structured template bundle sent via WhatsApp link
+              var msg = "🌱 *NEW MICROGREENS ORDER* %0A" +
+                        "=========================%0A%0A" +
+                        "👤 *CUSTOMER LOGISTICS:*%0A" +
+                        "• *Name:* " + encodeURIComponent(name) + "%0A" +
+                        "• *Contact:* " + encodeURIComponent(phone) + "%0A" +
+                        "• *Address:* " + encodeURIComponent(address) + "%0A" +
+                        "• *Pincode:* " + encodeURIComponent(pincode) + "%0A%0A" +
+                        "📦 *ORDER SELECTION:*%0A" +
+                        "• *Product:* " + product + "%0A" +
+                        "• *Size:* " + size + "g%0A" +
+                        "• *Quantity:* " + qty + " box(es)%0A%0A" +
+                        "💵 *BILLING:*%0A" +
+                        "• *" + total + "* _(Delivery charges extra based on distance)_%0A%0A" +
+                        "-------------------------%0A" +
+                        "💳 *DIRECT UPI PAYMENT INFO:*%0A" +
+                        "• *GPay / PhonePe Mobile:* 8105895809%0A" +
+                        "• *UPI ID:* ssservice1024@okaxis%0A%0A" +
+                        "👉 _Please wait for address/delivery verification before transfer!_";
+
+              window.open("https://wa.me/918105895809?text=" + msg);
+            }
           <\/script>
         </body>
         </html>
