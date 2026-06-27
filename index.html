@@ -475,26 +475,32 @@
               document.getElementById("total").innerHTML = "Total Payable: ₹" + total;
             }
 
-            function sendOrder() {
-              var name = document.getElementById("name").value.trim();
-              if(!name){
-                alert("Please enter your name to confirm.");
-                return;
-              }
-              var product = document.getElementById("product").value;
-              var size = document.getElementById("size").value;
-              var qty = document.getElementById("qty").value;
-              var total = document.getElementById("total").innerText;
+function sendOrder() {
+  var name = document.getElementById("name").value.trim();
+  if(!name){
+    alert("Please enter your name to confirm.");
+    return;
+  }
+  var product = document.getElementById("product").value;
+  var size = document.getElementById("size").value;
+  var qty = document.getElementById("qty").value;
+  var total = document.getElementById("total").innerText;
 
-              var msg = "🌱 *New Microgreens Order*:%0A%0A" +
-                        "*Name:* " + encodeURIComponent(name) + "%0A" +
-                        "*Product:* " + product + "%0A" +
-                        "*Size:* " + size + "g%0A" +
-                        "*Quantity:* " + qty + "%0A%0A" +
-                        "*" + total + "*";
+  // 📝 Custom message template including your zero-fee payment instructions
+  var msg = "🌱 *NEW MICROGREENS ORDER*:%0A%0A" +
+            "*Customer Name:* " + encodeURIComponent(name) + "%0A" +
+            "*Selected Product:* " + product + "%0A" +
+            "*Pack Size:* " + size + "g%0A" +
+            "*Quantity:* " + qty + " Box(es)%0A%0A" +
+            "🌟 *" + total + "*%0A%0A" +
+            "------------ *PAYMENT INFO* ------------%0A" +
+            "Please pay using any UPI app (GPay/PhonePe/Paytm):%0A" +
+            "📱 *Mobile Number:* 8105895809%0A" +
+            "💳 *UPI ID:* ssservice1024@okaxis%0A%0A" +
+            "👉 _Please share your delivery address & a payment screenshot to schedule the fresh harvest!_";
 
-              window.open("https://wa.me/918105895809?text=" + msg);
-            }
+  window.open("https://wa.me/918105895809?text=" + msg);
+}
           <\/script>
         </body>
         </html>
