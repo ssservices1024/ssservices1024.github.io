@@ -119,7 +119,7 @@
       font-size: 1.1rem;
     }
 
-    /* Info Grids (Why, Vision, Uses) */
+    /* Info Grids */
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -146,7 +146,7 @@
       font-size: 1.4rem;
     }
 
-    /* Products Cards Layout */
+    /* Products Layout */
     .products-container {
       display: flex;
       justify-content: center;
@@ -181,7 +181,7 @@
       margin-top: 10px;
     }
 
-    /* Action Buttons */
+    /* Buttons */
     .cta-btn {
       background: var(--accent-color);
       color: var(--primary-color);
@@ -205,7 +205,6 @@
       margin-top: 40px;
     }
 
-    /* Contact & Info Footer Section */
     .contact-info {
       background: #f0f7f4;
       border-radius: 12px;
@@ -230,7 +229,6 @@
       font-size: 0.95rem;
     }
 
-    /* Responsive Breakdown */
     @media (max-width: 768px) {
       .navbar {
         flex-direction: column;
@@ -363,12 +361,12 @@
   </section>
 
   <footer>
-    <p>&copy; 2026 SS Microgreens. All Rights Reserved. | Eat Fresh • Live Healthy</p>
+    <p>© 2026 SS Microgreens. All Rights Reserved. | Eat Fresh • Live Healthy</p>
   </footer>
 
   <script>
     function openOrderWindow() {
-      var win = window.open("", "", "width=480,height=760");
+      var win = window.open("", "", "width=480,height=720");
       win.document.write(`
         <html>
         <head>
@@ -492,6 +490,8 @@
             function showPosition(position) {
               var lat = position.coords.latitude;
               var lon = position.coords.longitude;
+              
+              // 🌐 Standard Google Maps structure
               document.getElementById("popup_mapsLink").value = "https://www.google.com/maps?q=" + lat + "," + lon;
               
               var btn = document.getElementById("locBtn");
@@ -499,6 +499,12 @@
               btn.style.background = "#d8f3dc";
               btn.style.color = "#1b4332";
               btn.style.border = "1px solid #1b4332";
+
+              // ✨ Automatically put a hint inside the address box so it doesn't look blank
+              var addrBox = document.getElementById("popup_address");
+              if(addrBox.value.trim() == "") {
+                addrBox.value = "[GPS Position Linked Successfully] ";
+              }
             }
 
             function showError(error) {
@@ -549,12 +555,13 @@
               var qty = document.getElementById("qty").value;
               var total = document.getElementById("total").innerText;
 
+              // 🛑 Check validation
               if(!name || !phone || !address || !pincode){
-                alert("Please fill in your Delivery Details before ordering.");
+                alert("Please type your Name, Phone, Address details, and Pincode to continue.");
                 return;
               }
 
-              var gpsLine = mapsLink ? "• *GPS Map Link:* " + mapsLink + "%0A" : "• *GPS Map Link:* Not Provided%0A";
+              var gpsLine = mapsLink ? "• *GPS Map Link:* " + encodeURIComponent(mapsLink) + "%0A" : "• *GPS Map Link:* Not Provided%0A";
 
               var msg = "🌱 *NEW MICROGREENS ORDER* %0A" +
                         "=========================%0A%0A" +
