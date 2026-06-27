@@ -137,6 +137,7 @@
 </footer>
 
 <!-- ✅ SCRIPT -->
+
 <script>
 
 function getRate(product, size) {
@@ -176,16 +177,72 @@ function placeOrder() {
   var product = document.getElementById("product").value;
   var size = document.getElementById("size").value;
   var qty = document.getElementById("qty").value;
-  var total = document.getElementById("total").innerText;
 
-  var msg = "🌱 New Order:%0A" +
-            "Name: " + name + "%0A" +
-            "Product: " + product + "%0A" +
-            "Size: " + size + "g%0A" +
-            "Quantity: " + qty + "%0A" +
-            total;
+  var price = getRate(product, size);
+  var total = price * qty;
 
-  window.open("https://wa.me/918105895809?text=" + msg);
+  // ✅ OPEN PROFESSIONAL POPUP WINDOW
+  var orderWindow = window.open("", "", "width=400,height=500");
+
+  orderWindow.document.write(`
+    <html>
+    <head>
+      <title>Confirm Order</title>
+      <style>
+        body {
+          font-family: Arial;
+          text-align: center;
+          padding: 20px;
+        }
+        h2 { color: green; }
+        .box {
+          border: 1px solid #ccc;
+          padding: 15px;
+          border-radius: 10px;
+          margin-top: 15px;
+        }
+        button {
+          background: green;
+          color: white;
+          padding: 10px;
+          border: none;
+          margin-top: 15px;
+          cursor: pointer;
+          border-radius: 5px;
+        }
+      </style>
+    </head>
+
+    <body>
+
+    <h2>🌱 Order Summary</h2>
+
+    <div class="box">
+      <p><b>Name:</b> ${name}</p>
+      <p><b>Product:</b> ${product}</p>
+      <p><b>Size:</b> ${size}g</p>
+      <p><b>Quantity:</b> ${qty}</p>
+      <p><b>Total:</b> ₹${total}</p>
+    </div>
+
+    <button onclick="sendOrder()">Confirm & Send</button>
+
+    <script>
+      function sendOrder() {
+        var msg = "🌱 New Order:%0A" +
+                  "Name: ${name}%0A" +
+                  "Product: ${product}%0A" +
+                  "Size: ${size}g%0A" +
+                  "Quantity: ${qty}%0A" +
+                  "Total: ₹${total}";
+
+        window.open("https://wa.me/918105895809?text=" + msg);
+      }
+    <\/script>
+
+    </body>
+    </html>
+  `);
 }
 
 </script>
