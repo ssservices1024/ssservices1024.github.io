@@ -1,225 +1,505 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>SS Microgreens</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SS Microgreens | Premium Organic Greens</title>
+  
   <style>
-    body {
-      margin: 0;
-      font-family: Arial;
+    /* Global Styles */
+    :root {
+      --primary-color: #1b4332;
+      --secondary-color: #2d6a4f;
+      --light-green: #d8f3dc;
+      --accent-color: #52b788;
+      --text-dark: #2d3748;
+      --text-light: #f8f9fa;
     }
 
-    header {
-      background: #0b6623;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--text-dark);
+      line-height: 1.6;
+      background-color: #f9fbf9;
+      scroll-behavior: smooth;
+    }
+
+    /* Navigation Bar */
+    .navbar {
+      background: var(--primary-color);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 5%;
+    }
+
+    .navbar .logo {
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+    }
+
+    .nav-links li a {
+      color: #b7e4c7;
+      text-decoration: none;
+      padding: 8px 15px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .nav-links li a:hover {
+      color: white;
+      background: var(--secondary-color);
+      border-radius: 5px;
+    }
+
+    /* Hero Banner Section */
+    .hero {
+      background: linear-gradient(rgba(27, 67, 50, 0.8), rgba(45, 106, 79, 0.85));
       color: white;
       text-align: center;
-      padding: 20px;
+      padding: 100px 20px;
     }
 
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      letter-spacing: 1px;
+    }
+
+    .hero p {
+      font-size: 1.3rem;
+      color: #d8f3dc;
+      margin-bottom: 30px;
+    }
+
+    /* Content Sections */
     .section {
-      padding: 30px;
+      padding: 80px 10%;
       text-align: center;
     }
 
-    .products {
+    .section h2 {
+      font-size: 2.2rem;
+      color: var(--primary-color);
+      margin-bottom: 15px;
+      position: relative;
+      display: inline-block;
+    }
+
+    .section h2::after {
+      content: '';
+      display: block;
+      width: 50%;
+      height: 3px;
+      background: var(--accent-color);
+      margin: 10px auto 0;
+      border-radius: 2px;
+    }
+
+    .section-subtitle {
+      color: #666;
+      margin-bottom: 40px;
+      font-size: 1.1rem;
+    }
+
+    /* Info Grids (Why, Vision, Uses) */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      margin-top: 20px;
+    }
+
+    .info-card {
+      background: white;
+      padding: 30px 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      border-top: 4px solid var(--secondary-color);
+      transition: transform 0.3s ease;
+    }
+
+    .info-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .info-card h3 {
+      color: var(--secondary-color);
+      margin-bottom: 12px;
+      font-size: 1.4rem;
+    }
+
+    /* Products Cards Layout */
+    .products-container {
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
+      gap: 30px;
     }
 
-    .card {
+    .product-card {
       background: white;
-      padding: 15px;
-      margin: 10px;
-      width: 220px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px #ccc;
+      padding: 30px;
+      width: 280px;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+      border: 1px solid #e1e8e4;
+      text-align: center;
     }
 
-    button {
-      background: green;
-      color: white;
-      padding: 12px 20px;
+    .product-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      color: var(--primary-color);
+    }
+
+    .product-sizes {
+      background: var(--light-green);
+      color: var(--primary-color);
+      padding: 6px 12px;
+      border-radius: 20px;
+      display: inline-block;
+      font-size: 0.9rem;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    /* Action Buttons */
+    .cta-btn {
+      background: var(--accent-color);
+      color: var(--primary-color);
+      padding: 14px 35px;
       border: none;
-      border-radius: 5px;
+      border-radius: 30px;
       cursor: pointer;
-      font-size: 16px;
+      font-size: 18px;
+      font-weight: bold;
+      box-shadow: 0 4px 15px rgba(82, 183, 136, 0.4);
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+    }
+
+    .cta-btn:hover {
+      background: #74c69d;
+      transform: scale(1.05);
+    }
+
+    .order-box {
+      margin-top: 40px;
+    }
+
+    /* Contact & Info Footer Section */
+    .contact-info {
+      background: #f0f7f4;
+      border-radius: 12px;
+      padding: 30px;
+      display: inline-block;
+      max-width: 500px;
+      width: 100%;
+      text-align: left;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+    }
+
+    .contact-info p {
+      margin: 15px 0;
+      font-size: 1.1rem;
     }
 
     footer {
-      background: #0b6623;
+      background: var(--primary-color);
       color: white;
-      padding: 15px;
+      padding: 30px;
       text-align: center;
+      font-size: 0.95rem;
+    }
+
+    /* Responsive Breakdown */
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+        padding: 15px;
+      }
+      .nav-links {
+        margin-top: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+      .section {
+        padding: 50px 5%;
+      }
     }
   </style>
 </head>
-
 <body>
 
-<header>
-  <h1>🌱 SS Microgreens</h1>
-  <p>Eat Fresh • Live Healthy</p>
-</header>
+  <nav class="navbar">
+    <a href="#" class="logo">🌱 SS Microgreens</a>
+    <ul class="nav-links">
+      <li><a href="#about">Why Microgreens</a></li>
+      <li><a href="#vision">Vision</a></li>
+      <li><a href="#products">Products</a></li>
+      <li><a href="#uses">Uses</a></li>
+      <li><a href="#contact">Contact Us</a></li>
+    </ul>
+  </nav>
 
-<!-- ✅ PRODUCTS -->
-<div class="section">
-  <h2>Our Products</h2>
+  <header class="hero">
+    <h1>Superfoods Grown Locally for You</h1>
+    <p>Eat Fresh • Live Healthy • Packed with 40x More Nutrients</p>
+    <a href="#products"><button class="cta-btn" style="box-shadow: none;">Browse Store</button></a>
+  </header>
 
-  <div class="products">
-    <div class="card">
-      <h3>🌿 Wheatgrass</h3>
-      <p>Sizes: 50g | 100g | 250g</p>
+  <section id="about" class="section">
+    <h2>Why Microgreens?</h2>
+    <p class="section-subtitle">Discover the incredible science behind these tiny powerhouses</p>
+    <div class="grid">
+      <div class="info-card">
+        <h3>Nutrient Dense</h3>
+        <p>Studies show microgreens are loaded with up to 40 times higher concentrations of vitamins and antioxidants than their mature counterparts.</p>
+      </div>
+      <div class="info-card">
+        <h3>Immunity Booster</h3>
+        <p>Packed with Vitamin C, E, and K, regular consumption supports immune health, helps gut health, and reduces chronic disease risks.</p>
+      </div>
+      <div class="info-card">
+        <h3>100% Organically Grown</h3>
+        <p>Harvested at peak vitality, our greens are grown purely with water and organic soil substrates without any chemical sprays or pesticides.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="vision" class="section" style="background-color: #f0f7f4;">
+    <h2>Our Vision & Mission</h2>
+    <p class="section-subtitle">Cultivating a sustainable, healthier tomorrow</p>
+    <div class="grid" style="max-width: 900px; margin: 0 auto;">
+      <div class="info-card">
+        <h3>Our Vision</h3>
+        <p>To make premium, organic nutrition easily accessible to every urban home, empowering families to take charge of their long-term health effortlessly.</p>
+      </div>
+      <div class="info-card">
+        <h3>Our Mission</h3>
+        <p>To cultivate and harvest fresh microgreens sustainably utilizing hyper-local farming methods, guaranteeing delivery from soil to table within hours.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="products" class="section">
+    <h2>Our Fresh Harvest</h2>
+    <p class="section-subtitle">Grown fresh to order. Select your favorites below.</p>
+    
+    <div class="products-container">
+      <div class="product-card">
+        <h3>🌿 Wheatgrass</h3>
+        <p>A deep-cleansing superfood juice variant exceptional for detoxification and energy.</p>
+        <span class="product-sizes">Sizes: 50g | 100g | 250g</span>
+      </div>
+
+      <div class="product-card">
+        <h3>🌻 Sunflower</h3>
+        <p>Crunchy, nutty, and highly filling greens packed with essential amino acids.</p>
+        <span class="product-sizes">Sizes: 50g | 100g | 250g</span>
+      </div>
+
+      <div class="product-card">
+        <h3>🌱 Pea Shoots</h3>
+        <p>Sweet, crisp shoots rich in fiber and vitamins, perfect for kids and salads.</p>
+        <span class="product-sizes">Sizes: 50g | 100g | 250g</span>
+      </div>
     </div>
 
-    <div class="card">
-      <h3>🌻 Sunflower</h3>
-      <p>Sizes: 50g | 100g | 250g</p>
+    <div class="order-box">
+      <button class="cta-btn" onclick="openOrderWindow()">Order Now via WhatsApp</button>
     </div>
+  </section>
 
-    <div class="card">
-      <h3>🌱 Pea Shoots</h3>
-      <p>Sizes: 50g | 100g | 250g</p>
+  <section id="uses" class="section" style="background-color: #f0f7f4;">
+    <h2>Culinary & Dietary Uses</h2>
+    <p class="section-subtitle">Incorporate fresh greens seamlessly into your daily lifestyle</p>
+    <div class="grid">
+      <div class="info-card">
+        <h3>Garnish & Salads</h3>
+        <p>Toss sunflower or pea shoots straight into raw vibrant salads or elevate meals by placing them over gourmet dishes.</p>
+      </div>
+      <div class="info-card">
+        <h3>Morning Smoothies</h3>
+        <p>Blend a handful of premium wheatgrass or pea shoots into your morning juices and protein blends for a massive vitalizing push.</p>
+      </div>
+      <div class="info-card">
+        <h3>Sandwiches & Wraps</h3>
+        <p>Layer them generously inside daily wraps, burgers, and sandwiches to introduce an organic crunch filled with macronutrients.</p>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <br><br>
+  <section id="contact" class="section">
+    <h2>Contact Us</h2>
+    <p class="section-subtitle">Reach out for custom subscription packages or institutional inquiries</p>
+    
+    <div class="contact-info">
+      <p><strong>📍 Location:</strong> Bengaluru, Karnataka, India</p>
+      <p><strong>📞 Call/WhatsApp:</strong> +91 8105895809</p>
+      <p><strong>📧 Email:</strong> ssservice1024@gmail.com</p>
+    </div>
+  </section>
 
-  <!-- ✅ ONLY BUTTON -->
-  <button onclick="openOrderWindow()">Place Order</button>
-
-</div>
-
-<footer>
-  <p>📞 8105895809 | 📧 ssservice1024@gmail.com</p>
-</footer>
-
-<!-- ✅ SCRIPT -->
-<script>
-
-function openOrderWindow() {
-
-  var win = window.open("", "", "width=400,height=620");
-
-  win.document.write(`
-  <html>
-  <head>
-    <title>Place Order</title>
-    <style>
-      body {
-        font-family: Arial;
-        text-align: center;
-        padding: 20px;
-      }
-
-      input, select {
-        width: 90%;
-        padding: 10px;
-        margin: 8px;
-      }
-
-      button {
-        background: green;
-        color: white;
-        padding: 10px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-    </style>
-  </head>
-
-  <body>
-
-  <h2>🌱 Place Your Order</h2>
-
-  <input type="text" id="name" placeholder="Your Name"><br>
-
-  <select id="product">
-    <option value="Wheatgrass">Wheatgrass</option>
-    <option value="Sunflower">Sunflower</option>
-    <option value="Pea Shoots">Pea Shoots</option>
-  </select><br>
-
-  <select id="size" onchange="updatePrice()">
-    <option value="50">50g</option>
-    <option value="100">100g</option>
-    <option value="250">250g</option>
-  </select><br>
-
-  <select id="qty" onchange="updatePrice()">
-    <option value="1">1</option>
-    <option value="2">2</option>
-    <option value="3">3</option>
-  </select><br>
-
-  <h3 id="price">Price: ₹0</h3>
-  <h3 id="total">Total: ₹0</h3>
-
-  <button onclick="sendOrder()">Confirm Order</button>
+  <footer>
+    <p>&copy; 2026 SS Microgreens. All Rights Reserved. | Eat Fresh • Live Healthy</p>
+  </footer>
 
   <script>
+    function openOrderWindow() {
+      var win = window.open("", "", "width=450,height=650");
+      win.document.write(`
+        <html>
+        <head>
+          <title>Place Order - SS Microgreens</title>
+          <style>
+            body {
+              font-family: 'Segoe UI', Arial, sans-serif;
+              text-align: center;
+              padding: 25px;
+              background-color: #f9fbf9;
+              color: #2d3748;
+            }
+            h2 { color: #1b4332; margin-bottom: 20px;}
+            input, select {
+              width: 95%;
+              padding: 12px;
+              margin: 10px 0;
+              border: 1px solid #ccc;
+              border-radius: 6px;
+              font-size: 15px;
+            }
+            .price-display {
+              background: #d8f3dc;
+              padding: 10px;
+              border-radius: 6px;
+              margin: 15px 0;
+              font-weight: bold;
+              color: #1b4332;
+            }
+            button {
+              background: #2d6a4f;
+              color: white;
+              padding: 14px;
+              width: 95%;
+              border: none;
+              border-radius: 6px;
+              cursor: pointer;
+              font-size: 16px;
+              font-weight: bold;
+              text-transform: uppercase;
+            }
+            button:hover { background: #1b4332; }
+          </style>
+        </head>
+        <body onload="updatePrice()">
+          <h2>🌱 Place Your Order</h2>
+          <input type="text" id="name" placeholder="Enter Your Name" required>
+          
+          <select id="product" onchange="updatePrice()">
+            <option value="Wheatgrass">Wheatgrass</option>
+            <option value="Sunflower">Sunflower</option>
+            <option value="Pea Shoots">Pea Shoots</option>
+          </select>
+          
+          <select id="size" onchange="updatePrice()">
+            <option value="50">50g</option>
+            <option value="100">100g</option>
+            <option value="250">250g</option>
+          </select>
+          
+          <select id="qty" onchange="updatePrice()">
+            <option value="1">1 Tray / Pack</option>
+            <option value="2">2 Trays / Packs</option>
+            <option value="3">3 Trays / Packs</option>
+            <option value="4">4 Trays / Packs</option>
+          </select>
 
-  function getRate(product, size) {
-    if(product == "Wheatgrass") {
-      if(size == 50) return 50;
-      if(size == 100) return 90;
-      if(size == 250) return 200;
+          <div class="price-display">
+            <div id="price">Unit Price: ₹0</div>
+            <div id="total" style="font-size: 1.2rem; margin-top: 5px;">Total Payable: ₹0</div>
+          </div>
+
+          <button onclick="sendOrder()">Confirm Via WhatsApp</button>
+
+          <script>
+            function getRate(product, size) {
+              if(product == "Wheatgrass") {
+                if(size == 50) return 50;
+                if(size == 100) return 90;
+                if(size == 250) return 200;
+              }
+              if(product == "Sunflower") {
+                if(size == 50) return 60;
+                if(size == 100) return 110;
+                if(size == 250) return 250;
+              }
+              if(product == "Pea Shoots") {
+                if(size == 50) return 70;
+                if(size == 100) return 130;
+                if(size == 250) return 280;
+              }
+              return 0;
+            }
+
+            function updatePrice() {
+              var product = document.getElementById("product").value;
+              var size = document.getElementById("size").value;
+              var qty = document.getElementById("qty").value;
+
+              var price = getRate(product, size);
+              var total = price * qty;
+
+              document.getElementById("price").innerHTML = "Unit Price: ₹" + price;
+              document.getElementById("total").innerHTML = "Total Payable: ₹" + total;
+            }
+
+            function sendOrder() {
+              var name = document.getElementById("name").value.trim();
+              if(!name){
+                alert("Please enter your name to confirm.");
+                return;
+              }
+              var product = document.getElementById("product").value;
+              var size = document.getElementById("size").value;
+              var qty = document.getElementById("qty").value;
+              var total = document.getElementById("total").innerText;
+
+              var msg = "🌱 *New Microgreens Order*:%0A%0A" +
+                        "*Name:* " + encodeURIComponent(name) + "%0A" +
+                        "*Product:* " + product + "%0A" +
+                        "*Size:* " + size + "g%0A" +
+                        "*Quantity:* " + qty + "%0A%0A" +
+                        "*" + total + "*";
+
+              window.open("https://wa.me/918105895809?text=" + msg);
+            }
+          <\/script>
+        </body>
+        </html>
+      `);
     }
-
-    if(product == "Sunflower") {
-      if(size == 50) return 60;
-      if(size == 100) return 110;
-      if(size == 250) return 250;
-    }
-
-    if(product == "Pea Shoots") {
-      if(size == 50) return 70;
-      if(size == 100) return 130;
-      if(size == 250) return 280;
-    }
-  }
-
-  function updatePrice() {
-    var product = document.getElementById("product").value;
-    var size = document.getElementById("size").value;
-    var qty = document.getElementById("qty").value;
-
-    var price = getRate(product, size);
-    var total = price * qty;
-
-    document.getElementById("price").innerHTML = "Price: ₹" + price;
-    document.getElementById("total").innerHTML = "Total: ₹" + total;
-  }
-
-  function sendOrder() {
-    var name = document.getElementById("name").value;
-    var product = document.getElementById("product").value;
-    var size = document.getElementById("size").value;
-    var qty = document.getElementById("qty").value;
-    var total = document.getElementById("total").innerText;
-
-    var msg = "🌱 New Order:%0A" +
-              "Name: " + name + "%0A" +
-              "Product: " + product + "%0A" +
-              "Size: " + size + "g%0A" +
-              "Quantity: " + qty + "%0A" +
-              total;
-
-    window.open("https://wa.me/918105895809?text=" + msg);
-  }
-
-  <\/script>
-
-  </body>
-  </html>
-  `);
-}
-
-</script>
-
+  </script>
 </body>
 </html>
-
