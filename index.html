@@ -394,7 +394,6 @@
             }
             textarea { resize: vertical; font-family: inherit; }
             
-            /* Location Button UI */
             .loc-btn {
               background: #f0f7f4;
               color: #2d6a4f;
@@ -443,15 +442,14 @@
           <h2>🌱 Secure Checkout</h2>
           
           <div class="section-label">1. DELIVERY DETAILS</div>
-          <input type="text" id="name" placeholder="Full Name" required>
-          <input type="tel" id="phone" placeholder="WhatsApp Phone Number" required>
+          <input type="text" id="popup_name" placeholder="Full Name" required>
+          <input type="tel" id="popup_phone" placeholder="WhatsApp Phone Number" required>
           
-          <!-- GPS Location Auto Capture -->
           <button type="button" class="loc-btn" id="locBtn" onclick="getLocation()">📍 Auto-Fetch My GPS Location</button>
-          <input type="hidden" id="mapsLink" value="">
+          <input type="hidden" id="popup_mapsLink" value="">
 
-          <textarea id="address" rows="3" placeholder="Complete Address (House No, Flat, Apartment, Street Name)" required></textarea>
-          <input type="text" id="pincode" placeholder="Pincode" maxlength="6" required>
+          <textarea id="popup_address" rows="3" placeholder="Complete Address (House No, Flat, Apartment, Street Name)" required></textarea>
+          <input type="text" id="popup_pincode" placeholder="Pincode" maxlength="6" required>
           
           <div class="section-label">2. SELECT Fresh HARVEST</div>
           <select id="product" onchange="updatePrice()">
@@ -475,13 +473,12 @@
 
           <div class="price-display">
             <div id="price">Unit Price: ₹0</div>
-            <div id="total" style="font-size: 1.25rem; margin-top: 4px;">Total Payable: ₹0</div>
+            <div id="total">Total Payable: ₹0</div>
           </div>
 
           <button class="submit-btn" onclick="sendOrder()">Confirm Order via WhatsApp</button>
 
           <script>
-            // 🗺️ Geolocation Handler
             function getLocation() {
               var btn = document.getElementById("locBtn");
               if (navigator.geolocation) {
@@ -495,7 +492,7 @@
             function showPosition(position) {
               var lat = position.coords.latitude;
               var lon = position.coords.longitude;
-              document.getElementById("mapsLink").value = "https://www.google.com/maps?q=" + lat + "," + lon;
+              document.getElementById("popup_mapsLink").value = "https://www.google.com/maps?q=" + lat + "," + lon;
               
               var btn = document.getElementById("locBtn");
               btn.innerText = "✅ GPS Coordinates Captured!";
@@ -507,7 +504,6 @@
             function showError(error) {
               var btn = document.getElementById("locBtn");
               btn.innerText = "❌ Location Denied. Type address manually.";
-              alert("Could not access location. Please make sure location access is enabled or fill your text address manually below.");
             }
 
             function getRate(product, size) {
@@ -542,11 +538,11 @@
             }
 
             function sendOrder() {
-              var name = document.getElementById("name").value.trim();
-              var phone = document.getElementById("phone").value.trim();
-              var address = document.getElementById("address").value.trim();
-              var pincode = document.getElementById("pincode").value.trim();
-              var mapsLink = document.getElementById("mapsLink").value;
+              var name = document.getElementById("popup_name").value.trim();
+              var phone = document.getElementById("popup_phone").value.trim();
+              var address = document.getElementById("popup_address").value.trim();
+              var pincode = document.getElementById("popup_pincode").value.trim();
+              var mapsLink = document.getElementById("popup_mapsLink").value;
               
               var product = document.getElementById("product").value;
               var size = document.getElementById("size").value;
@@ -560,7 +556,6 @@
 
               var gpsLine = mapsLink ? "• *GPS Map Link:* " + mapsLink + "%0A" : "• *GPS Map Link:* Not Provided%0A";
 
-              // 📝 New template formatting including layout location capturing
               var msg = "🌱 *NEW MICROGREENS ORDER* %0A" +
                         "=========================%0A%0A" +
                         "👤 *CUSTOMER LOGISTICS:*%0A" +
