@@ -9,38 +9,18 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #f4fff4;
     }
 
     header {
-      background: green;
-      color: white;
-      padding: 15px;
-      text-align: center;
-    }
-
-    nav {
-      text-align: center;
       background: #0b6623;
-      padding: 10px;
-    }
-
-    nav a {
       color: white;
-      margin: 15px;
-      text-decoration: none;
-      font-size: 18px;
-    }
-
-    .hero {
-      padding: 50px;
       text-align: center;
-      background: lightgreen;
+      padding: 20px;
     }
 
     .section {
-      padding: 30px;
       text-align: center;
+      padding: 30px;
     }
 
     .products {
@@ -50,18 +30,34 @@
     }
 
     .card {
-      background: white;
-      padding: 20px;
+      background: #fff;
       margin: 10px;
-      border-radius: 10px;
+      padding: 15px;
       width: 220px;
-      box-shadow: 0px 0px 10px gray;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #ccc;
     }
 
     .contact {
       background: #eaffea;
       padding: 30px;
-      text-align: center;
+    }
+
+    input, select, textarea {
+      width: 80%;
+      padding: 10px;
+      margin: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background: green;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
     }
 
     footer {
@@ -70,15 +66,6 @@
       text-align: center;
       padding: 15px;
     }
-
-    button {
-      background: green;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
   </style>
 </head>
 
@@ -86,82 +73,87 @@
 
 <header>
   <h1>🌱 SS Microgreens</h1>
-  <p>Fresh • Organic • Healthy</p>
+  <p>Fresh | Organic | Healthy</p>
 </header>
 
-<nav>
-  <a href="#">Home</a>
-  <a href="#products">Products</a>
-  <a href="#contact">Contact</a>
-</nav>
-
-<div class="hero">
-  <h2>Farm Fresh Microgreens</h2>
-  <p>Delivered directly to your home in Bangalore</p>
-</div>
-
 <!-- ✅ PRODUCTS -->
-<div class="section" id="products">
+<div class="section">
   <h2>Our Products</h2>
 
   <div class="products">
+
     <div class="card">
       <h3>🌿 Wheatgrass</h3>
-      <p>Detox & immunity booster</p>
+      <p>50g Pack</p>
+      <p>₹50</p>
     </div>
 
     <div class="card">
       <h3>🌻 Sunflower</h3>
-      <p>Protein-rich & nutritious</p>
+      <p>50g Pack</p>
+      <p>₹60</p>
     </div>
 
     <div class="card">
       <h3>🌱 Pea Shoots</h3>
-      <p>Fresh, crunchy & tasty</p>
+      <p>50g Pack</p>
+      <p>₹70</p>
     </div>
+
   </div>
 </div>
 
-<!-- ✅ CONTACT -->
-<div class="contact" id="contact">
-  <h2>Contact Us</h2>
+<!-- ✅ ORDER FORM -->
+<div class="contact">
+  <h2>Place Your Order</h2>
 
-  <p>📍 Bangalore</p>
+  <form onsubmit="sendOrder(); return false;">
+    
+    <input type="text" id="name" placeholder="Your Name" required><br>
 
-  <p>📞 Phone: <a href="tel:8105895809">8105895809</a></p>
+    <select id="product">
+      <option value="Wheatgrass (50g)">Wheatgrass (50g)</option>
+      <option value="Sunflower (50g)">Sunflower (50g)</option>
+      <option value="Pea Shoots (50g)">Pea Shoots (50g)</option>
+    </select><br>
 
-  <p>📧 Email: <a href="mailto:ssservice1024@gmail.com">ssservice1024@gmail.com</a></p>
+    <select id="qty">
+      <option value="1 Box">1 Box</option>
+      <option value="2 Boxes">2 Boxes</option>
+      <option value="3 Boxes">3 Boxes</option>
+    </select><br>
+
+    <textarea id="address" placeholder="Enter Delivery Address"></textarea><br>
+
+    <button type="submit">Place Order</button>
+
+  </form>
 
   <br>
 
-  <!-- ✅ AUTO WHATSAPP -->
+  <p>📞 8105895809</p>
+  <p>📧 ssservice1024@gmail.com</p>
 
-<button onclick="window.open('https://wa.me/918105895809?text=Hello I want to order microgreens')">
-  Order on WhatsApp
-</button>
+</div>
 
 <footer>
-  <p>© 2026 SS Microgreens | All Rights Reserved</p>
+  <p>© 2026 SS Microgreens</p>
 </footer>
 
-<!-- ✅ SCRIPT -->
 <script>
-function sendWhatsApp() {
-  var name = prompt("Enter your name:");
-  if (!name) return;
+function sendOrder() {
+  var name = document.getElementById("name").value;
+  var product = document.getElementById("product").value;
+  var qty = document.getElementById("qty").value;
+  var address = document.getElementById("address").value;
 
-  var product = prompt("Enter product (Wheatgrass / Sunflower / Pea Shoots):");
-  if (!product) return;
+  var msg = "🌱 New Order:%0A" +
+            "Name: " + name + "%0A" +
+            "Product: " + product + "%0A" +
+            "Quantity: " + qty + "%0A" +
+            "Address: " + address;
 
-  var quantity = prompt("Enter quantity:");
-  if (!quantity) return;
-
-  var message = "Hello, I want to order:%0A" +
-                "Name: " + name + "%0A" +
-                "Product: " + product + "%0A" +
-                "Quantity: " + quantity;
-
-  window.open("https://wa.me/918105895809?text=" + message);
+  window.open("https://wa.me/918105895809?text=" + msg);
 }
 </script>
 
