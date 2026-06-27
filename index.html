@@ -368,7 +368,7 @@
 
   <script>
     function openOrderWindow() {
-      var win = window.open("", "", "width=480,height=720");
+      var win = window.open("", "", "width=480,height=760");
       win.document.write(`
         <html>
         <head>
@@ -393,6 +393,24 @@
               box-sizing: border-box;
             }
             textarea { resize: vertical; font-family: inherit; }
+            
+            /* Location Button UI */
+            .loc-btn {
+              background: #f0f7f4;
+              color: #2d6a4f;
+              border: 1px dashed #2d6a4f;
+              padding: 10px;
+              width: 95%;
+              margin: 6px auto;
+              display: block;
+              border-radius: 6px;
+              cursor: pointer;
+              font-weight: bold;
+              font-size: 13px;
+              transition: all 0.2s ease;
+            }
+            .loc-btn:hover { background: #e1e8e4; }
+            
             .price-display {
               background: #d8f3dc;
               padding: 12px;
@@ -404,7 +422,7 @@
               color: #1b4332;
               text-align: center;
             }
-            button {
+            .submit-btn {
               background: #2d6a4f;
               color: white;
               padding: 14px;
@@ -418,7 +436,7 @@
               font-weight: bold;
               text-transform: uppercase;
             }
-            button:hover { background: #1b4332; }
+            .submit-btn:hover { background: #1b4332; }
           </style>
         </head>
         <body onload="updatePrice()">
@@ -427,8 +445,13 @@
           <div class="section-label">1. DELIVERY DETAILS</div>
           <input type="text" id="name" placeholder="Full Name" required>
           <input type="tel" id="phone" placeholder="WhatsApp Phone Number" required>
-          <textarea id="address" rows="3" placeholder="Complete Delivery Address (House No, Building, Area/Street Name)" required></textarea>
-          <input type="text" id="pincode" placeholder="Pincode (Bengaluru Only)" maxlength="6" required>
+          
+          <!-- GPS Location Auto Capture -->
+          <button type="button" class="loc-btn" id="locBtn" onclick="getLocation()">📍 Auto-Fetch My GPS Location</button>
+          <input type="hidden" id="mapsLink" value="">
+
+          <textarea id="address" rows="3" placeholder="Complete Address (House No, Flat, Apartment, Street Name)" required></textarea>
+          <input type="text" id="pincode" placeholder="Pincode" maxlength="6" required>
           
           <div class="section-label">2. SELECT Fresh HARVEST</div>
           <select id="product" onchange="updatePrice()">
@@ -455,9 +478,38 @@
             <div id="total" style="font-size: 1.25rem; margin-top: 4px;">Total Payable: ₹0</div>
           </div>
 
-          <button onclick="sendOrder()">Confirm Order via WhatsApp</button>
+          <button class="submit-btn" onclick="sendOrder()">Confirm Order via WhatsApp</button>
 
           <script>
+            // 🗺️ Geolocation Handler
+            function getLocation() {
+              var btn = document.getElementById("locBtn");
+              if (navigator.geolocation) {
+                btn.innerText = "⏳ Locating your GPS position...";
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+              } else {
+                alert("Geolocation is not supported by this browser.");
+              }
+            }
+
+            function showPosition(position) {
+              var lat = position.coords.latitude;
+              var lon = position.coords.longitude;
+              document.getElementById("mapsLink").value = "https://www.google.com/maps?q=" + lat + "," + lon;
+              
+              var btn = document.getElementById("locBtn");
+              btn.innerText = "✅ GPS Coordinates Captured!";
+              btn.style.background = "#d8f3dc";
+              btn.style.color = "#1b4332";
+              btn.style.border = "1px solid #1b4332";
+            }
+
+            function showError(error) {
+              var btn = document.getElementById("locBtn");
+              btn.innerText = "❌ Location Denied. Type address manually.";
+              alert("Could not access location. Please make sure location access is enabled or fill your text address manually below.");
+            }
+
             function getRate(product, size) {
               if(product == "Wheatgrass") {
                 if(size == 50) return 50;
@@ -494,6 +546,7 @@
               var phone = document.getElementById("phone").value.trim();
               var address = document.getElementById("address").value.trim();
               var pincode = document.getElementById("pincode").value.trim();
+              var mapsLink = document.getElementById("mapsLink").value;
               
               var product = document.getElementById("product").value;
               var size = document.getElementById("size").value;
@@ -501,18 +554,21 @@
               var total = document.getElementById("total").innerText;
 
               if(!name || !phone || !address || !pincode){
-                alert("Please complete all delivery information fields before submitting.");
+                alert("Please fill in your Delivery Details before ordering.");
                 return;
               }
 
-              // 📝 Structured template bundle sent via WhatsApp link
+              var gpsLine = mapsLink ? "• *GPS Map Link:* " + mapsLink + "%0A" : "• *GPS Map Link:* Not Provided%0A";
+
+              // 📝 New template formatting including layout location capturing
               var msg = "🌱 *NEW MICROGREENS ORDER* %0A" +
                         "=========================%0A%0A" +
                         "👤 *CUSTOMER LOGISTICS:*%0A" +
                         "• *Name:* " + encodeURIComponent(name) + "%0A" +
                         "• *Contact:* " + encodeURIComponent(phone) + "%0A" +
                         "• *Address:* " + encodeURIComponent(address) + "%0A" +
-                        "• *Pincode:* " + encodeURIComponent(pincode) + "%0A%0A" +
+                        "• *Pincode:* " + encodeURIComponent(pincode) + "%0A" +
+                        gpsLine + "%0A" +
                         "📦 *ORDER SELECTION:*%0A" +
                         "• *Product:* " + product + "%0A" +
                         "• *Size:* " + size + "g%0A" +
@@ -523,7 +579,7 @@
                         "💳 *DIRECT UPI PAYMENT INFO:*%0A" +
                         "• *GPay / PhonePe Mobile:* 8105895809%0A" +
                         "• *UPI ID:* ssservice1024@okaxis%0A%0A" +
-                        "👉 _Please wait for address/delivery verification before transfer!_";
+                        "👉 _We will verify the delivery distance fee now!_";
 
               window.open("https://wa.me/918105895809?text=" + msg);
             }
