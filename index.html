@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -482,7 +481,14 @@
               var btn = document.getElementById("locBtn");
               if (navigator.geolocation) {
                 btn.innerText = "⏳ Locating your GPS position...";
-                navigator.geolocation.getCurrentPosition(showPosition, showError);
+                btn.disabled = true;
+                
+                // Production-grade: High accuracy with proper timeout
+                navigator.geolocation.getCurrentPosition(showPosition, showError, {
+                  enableHighAccuracy: true,
+                  timeout: 10000,
+                  maximumAge: 0
+                });
               } else {
                 alert("Geolocation is not supported by this browser.");
               }
@@ -491,15 +497,28 @@
             function showPosition(position) {
               var lat = position.coords.latitude;
               var lon = position.coords.longitude;
+              var accuracy = position.coords.accuracy;
+              
+              // Only accept if accuracy is within 100 meters (production standard)
+              if (accuracy > 100) {
+                var btn = document.getElementById("locBtn");
+                btn.innerText = "⚠️ Low accuracy (" + Math.round(accuracy) + "m). Please type address.";
+                btn.style.background = "#fff3cd";
+                btn.style.color = "#856404";
+                btn.style.border = "1px solid #856404";
+                btn.disabled = false;
+                return;
+              }
               
               // 🌐 Standard global maps query format
               document.getElementById("popup_mapsLink").value = "https://www.google.com/maps?q=" + lat + "," + lon;
               
               var btn = document.getElementById("locBtn");
-              btn.innerText = "✅ GPS Coordinates Captured!";
+              btn.innerText = "✅ GPS Locked (" + Math.round(accuracy) + "m accuracy)";
               btn.style.background = "#d8f3dc";
               btn.style.color = "#1b4332";
               btn.style.border = "1px solid #1b4332";
+              btn.disabled = false;
 
               var addrBox = document.getElementById("popup_address");
               addrBox.value = "[📍 GPS Coordinates Linked] " + addrBox.value;
@@ -507,7 +526,8 @@
 
             function showError(error) {
               var btn = document.getElementById("locBtn");
-              btn.innerText = "❌ Location Denied. Type address manually.";
+              btn.innerText = "❌ Enable location in browser settings";
+              btn.disabled = false;
             }
 
             function getRate(product, size) {
@@ -592,5 +612,3 @@
   </script>
 </body>
 </html>
-
-```
