@@ -38,26 +38,14 @@
       box-shadow: 0 0 10px #ccc;
     }
 
-    input, select {
-      width: 80%;
-      padding: 10px;
-      margin: 8px;
-      border-radius: 5px;
-    }
-
     button {
       background: green;
       color: white;
-      padding: 10px;
+      padding: 12px 20px;
       border: none;
       border-radius: 5px;
       cursor: pointer;
-    }
-
-    .contact {
-      background: #eaffea;
-      padding: 30px;
-      text-align: center;
+      font-size: 16px;
     }
 
     footer {
@@ -76,31 +64,76 @@
   <p>Eat Fresh • Live Healthy</p>
 </header>
 
-<!-- ✅ PRODUCT DISPLAY -->
+<!-- ✅ PRODUCTS -->
 <div class="section">
   <h2>Our Products</h2>
 
   <div class="products">
     <div class="card">
       <h3>🌿 Wheatgrass</h3>
-      <p>Available Sizes: 50g | 100g | 250g</p>
+      <p>Sizes: 50g | 100g | 250g</p>
     </div>
 
     <div class="card">
       <h3>🌻 Sunflower</h3>
-      <p>Available Sizes: 50g | 100g | 250g</p>
+      <p>Sizes: 50g | 100g | 250g</p>
     </div>
 
     <div class="card">
       <h3>🌱 Pea Shoots</h3>
-      <p>Available Sizes: 50g | 100g | 250g</p>
+      <p>Sizes: 50g | 100g | 250g</p>
     </div>
   </div>
+
+  <br><br>
+
+  <!-- ✅ ONLY BUTTON -->
+  <button onclick="openOrderWindow()">Place Order</button>
+
 </div>
 
-<!-- ✅ ORDER FORM -->
-<div class="contact">
-  <h2>Place Your Order</h2>
+<footer>
+  <p>📞 8105895809 | 📧 ssservice1024@gmail.com</p>
+</footer>
+
+<!-- ✅ SCRIPT -->
+<script>
+
+function openOrderWindow() {
+
+  var win = window.open("", "", "width=400,height=620");
+
+  win.document.write(`
+  <html>
+  <head>
+    <title>Place Order</title>
+    <style>
+      body {
+        font-family: Arial;
+        text-align: center;
+        padding: 20px;
+      }
+
+      input, select {
+        width: 90%;
+        padding: 10px;
+        margin: 8px;
+      }
+
+      button {
+        background: green;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+
+  <body>
+
+  <h2>🌱 Place Your Order</h2>
 
   <input type="text" id="name" placeholder="Your Name"><br>
 
@@ -125,123 +158,63 @@
   <h3 id="price">Price: ₹0</h3>
   <h3 id="total">Total: ₹0</h3>
 
-  <button onclick="placeOrder()">Place Order</button>
+  <button onclick="sendOrder()">Confirm Order</button>
 
-  <p>📞 8105895809</p>
-  <p>📧 ssservice1024@gmail.com</p>
+  <script>
 
-</div>
+  function getRate(product, size) {
+    if(product == "Wheatgrass") {
+      if(size == 50) return 50;
+      if(size == 100) return 90;
+      if(size == 250) return 200;
+    }
 
-<footer>
-  <p>© 2026 SS Microgreens</p>
-</footer>
+    if(product == "Sunflower") {
+      if(size == 50) return 60;
+      if(size == 100) return 110;
+      if(size == 250) return 250;
+    }
 
-<!-- ✅ SCRIPT -->
-
-<script>
-
-function getRate(product, size) {
-  if(product == "Wheatgrass") {
-    if(size == 50) return 50;
-    if(size == 100) return 90;
-    if(size == 250) return 200;
+    if(product == "Pea Shoots") {
+      if(size == 50) return 70;
+      if(size == 100) return 130;
+      if(size == 250) return 280;
+    }
   }
 
-  if(product == "Sunflower") {
-    if(size == 50) return 60;
-    if(size == 100) return 110;
-    if(size == 250) return 250;
+  function updatePrice() {
+    var product = document.getElementById("product").value;
+    var size = document.getElementById("size").value;
+    var qty = document.getElementById("qty").value;
+
+    var price = getRate(product, size);
+    var total = price * qty;
+
+    document.getElementById("price").innerHTML = "Price: ₹" + price;
+    document.getElementById("total").innerHTML = "Total: ₹" + total;
   }
 
-  if(product == "Pea Shoots") {
-    if(size == 50) return 70;
-    if(size == 100) return 130;
-    if(size == 250) return 280;
+  function sendOrder() {
+    var name = document.getElementById("name").value;
+    var product = document.getElementById("product").value;
+    var size = document.getElementById("size").value;
+    var qty = document.getElementById("qty").value;
+    var total = document.getElementById("total").innerText;
+
+    var msg = "🌱 New Order:%0A" +
+              "Name: " + name + "%0A" +
+              "Product: " + product + "%0A" +
+              "Size: " + size + "g%0A" +
+              "Quantity: " + qty + "%0A" +
+              total;
+
+    window.open("https://wa.me/918105895809?text=" + msg);
   }
-}
 
-function updatePrice() {
-  var product = document.getElementById("product").value;
-  var size = document.getElementById("size").value;
-  var qty = document.getElementById("qty").value;
+  <\/script>
 
-  var price = getRate(product, size);
-  var total = price * qty;
-
-  document.getElementById("price").innerHTML = "Price: ₹" + price;
-  document.getElementById("total").innerHTML = "Total: ₹" + total;
-}
-
-function placeOrder() {
-  var name = document.getElementById("name").value;
-  var product = document.getElementById("product").value;
-  var size = document.getElementById("size").value;
-  var qty = document.getElementById("qty").value;
-
-  var price = getRate(product, size);
-  var total = price * qty;
-
-  // ✅ OPEN PROFESSIONAL POPUP WINDOW
-  var orderWindow = window.open("", "", "width=400,height=500");
-
-  orderWindow.document.write(`
-    <html>
-    <head>
-      <title>Confirm Order</title>
-      <style>
-        body {
-          font-family: Arial;
-          text-align: center;
-          padding: 20px;
-        }
-        h2 { color: green; }
-        .box {
-          border: 1px solid #ccc;
-          padding: 15px;
-          border-radius: 10px;
-          margin-top: 15px;
-        }
-        button {
-          background: green;
-          color: white;
-          padding: 10px;
-          border: none;
-          margin-top: 15px;
-          cursor: pointer;
-          border-radius: 5px;
-        }
-      </style>
-    </head>
-
-    <body>
-
-    <h2>🌱 Order Summary</h2>
-
-    <div class="box">
-      <p><b>Name:</b> ${name}</p>
-      <p><b>Product:</b> ${product}</p>
-      <p><b>Size:</b> ${size}g</p>
-      <p><b>Quantity:</b> ${qty}</p>
-      <p><b>Total:</b> ₹${total}</p>
-    </div>
-
-    <button onclick="sendOrder()">Confirm & Send</button>
-
-    <script>
-      function sendOrder() {
-        var msg = "🌱 New Order:%0A" +
-                  "Name: ${name}%0A" +
-                  "Product: ${product}%0A" +
-                  "Size: ${size}g%0A" +
-                  "Quantity: ${qty}%0A" +
-                  "Total: ₹${total}";
-
-        window.open("https://wa.me/918105895809?text=" + msg);
-      }
-    <\/script>
-
-    </body>
-    </html>
+  </body>
+  </html>
   `);
 }
 
@@ -249,3 +222,4 @@ function placeOrder() {
 
 </body>
 </html>
+
