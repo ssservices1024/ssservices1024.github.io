@@ -1,13 +1,4 @@
-Let's get both of those issues completely squared away!
 
-### What went wrong:
-
-1. **The GPS Link:** The URL was missing a `/` and had a hardcoded `0` in front of the coordinates (`https://www.google.com/maps?q=lat,lon`), which completely broke how Google Maps read it. I have updated it to use the standard, universally recognized format: `https://www.google.com/maps?q=lat,lon`.
-2. **Window Not Closing:** The popup window didn't close automatically because we didn't tell it to! I added a simple line `setTimeout(function(){ win.close(); }, 500);` right after the WhatsApp redirect executes, which will cleanly shut down the checkout popup window half a second after the user is redirected to WhatsApp.
-
-### 📋 Copy the Fully Updated Code:
-
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -561,9 +552,10 @@ Let's get both of those issues completely squared away!
               var size = document.getElementById("size").value;
               var qty = document.getElementById("qty").value;
               var total = document.getElementById("total").innerText;
-
-              var gpsLine = mapsLink ? "• *GPS Map Link:* " + encodeURIComponent(mapsLink) + "%0A" : "";
-
+            
+              // ✅ FIX: Don't encode the entire URL - just encode the text message parts
+              var gpsLine = mapsLink ? "• *GPS Map Link:* " + mapsLink + "%0A" : "";
+            
               var msg = "🌱 *NEW MICROGREENS ORDER* %0A" +
                         "=========================%0A%0A" +
                         "👤 *CUSTOMER LOGISTICS:*%0A" +
@@ -583,7 +575,7 @@ Let's get both of those issues completely squared away!
                         "• *GPay / PhonePe Mobile:* 8105895809%0A" +
                         "• *UPI ID:* ssservice1024@okaxis%0A%0A" +
                         "👉 _We will verify the delivery distance fee now!_";
-
+            
               // 🌐 Open WhatsApp integration
               window.open("https://wa.me/918105895809?text=" + msg);
               
