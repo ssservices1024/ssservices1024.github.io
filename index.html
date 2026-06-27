@@ -61,6 +61,7 @@
     .contact {
       background: #eaffea;
       padding: 30px;
+      text-align: center;
     }
 
     footer {
@@ -97,7 +98,10 @@
 <div class="hero">
   <h2>Farm Fresh Microgreens</h2>
   <p>Delivered directly to your home in Bangalore</p>
-  <s="section" id="products">
+</div>
+
+<!-- ✅ PRODUCTS -->
+<div class="section" id="products">
   <h2>Our Products</h2>
 
   <div class="products">
@@ -118,6 +122,7 @@
   </div>
 </div>
 
+<!-- ✅ CONTACT -->
 <div class="contact" id="contact">
   <h2>Contact Us</h2>
 
@@ -125,18 +130,40 @@
 
   <p>📞 Phone: <a href="tel:8105895809">8105895809</a></p>
 
-  <p>📧 Email: <a href="mailto:yourgmail@gmail.com">yourgmail@gmail.com</a></p>
+  <p>📧 Email: <a href="mailto:ssservice1024@gmail.com">ssservice1024@gmail.com</a></p>
 
   <br>
 
-  <button onclick="window.open('https://wa.me/918105895809')">
-    WhatsApp Order
+  <!-- ✅ AUTO WHATSAPP -->
+  <button onclick="sendWhatsApp()">
+    Order on WhatsApp
   </button>
 </div>
 
 <footer>
   <p>© 2026 SS Microgreens | All Rights Reserved</p>
 </footer>
+
+<!-- ✅ SCRIPT -->
+<script>
+function sendWhatsApp() {
+  var name = prompt("Enter your name:");
+  if (!name) return;
+
+  var product = prompt("Enter product (Wheatgrass / Sunflower / Pea Shoots):");
+  if (!product) return;
+
+  var quantity = prompt("Enter quantity:");
+  if (!quantity) return;
+
+  var message = "Hello, I want to order:%0A" +
+                "Name: " + name + "%0A" +
+                "Product: " + product + "%0A" +
+                "Quantity: " + quantity;
+
+  window.open("https://wa.me/918105895809?text=" + message);
+}
+</script>
 
 </body>
 </html>
